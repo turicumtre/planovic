@@ -1,2 +1,1 @@
-rootProject.name = "Planovic"
-
+rootProject.name = "demo"
