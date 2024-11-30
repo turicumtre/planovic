@@ -1,4 +1,4 @@
-package ch.planovic.demo;
+package ch.wiibeeri.planovic;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
