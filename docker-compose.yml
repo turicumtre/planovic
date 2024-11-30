@@ -1,0 +1,12 @@
+services:
+  mongo:
+    image : mongodb/mongodb-community-server
+    container_name: mongodb-planovic
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - C:\Users\planovic-app\Desktop\db:/data/db
+    ports:
+      - 27017:27017
+    restart: unless-stopped
