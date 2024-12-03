@@ -2,12 +2,8 @@ package ch.wiibeeri.planovic.controllers;
 
 import ch.wiibeeri.planovic.datatypes.Entry;
 import ch.wiibeeri.planovic.services.EntryService;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,6 +16,11 @@ public class EntryController {
     @GetMapping("/allOfYear/{year}")
     public List<Entry> allOfYear(@PathVariable int year) {
         return entryService.allOfYear(year);
+    }
+
+    @PostMapping("/create")
+    public Entry create(@RequestBody Entry entry) {
+        return entryService.insert(entry);
     }
 
     @GetMapping("/{id}")

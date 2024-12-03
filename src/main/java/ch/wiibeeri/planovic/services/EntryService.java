@@ -20,4 +20,8 @@ public class EntryService {
     public List<Entry> allOfYear(int year) {
         return entryRepository.allOfYear(year);
     }
+
+    public Entry insert(Entry entry) {
+        return entryRepository.insert(entry);
+    }
 }
