@@ -6,10 +6,10 @@ services:
       - PUID=1000
       - PGID=1000
     volumes:
-      - C:\Users\planovic-app\Desktop\db:/data/db
+      - /datadrive/db:/data/db
     ports:
       - 27017:27017
-    restart: unless-stopped
+    restart: no
     networks:
       - app-network
 
@@ -18,7 +18,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "80:8080"
     environment:
       - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/planovic
     depends_on:
