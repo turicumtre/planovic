@@ -1,7 +1,8 @@
 # What is it?
 Calendar app test project to play with docker, spring boot and java 21 
 
-# Deploy
+# Set up server (Ubuntu)
+One-time configuration
 ```
 mkdir /datadrive
 mkdir /datadrive/db
@@ -13,11 +14,23 @@ ssh-keygen -t ed25519 -C "planovic-server"
 cat /root/.ssh/id_ed25519.pub // add to Github
 git clone git@github.com:turicumtre/planovic.git
 chmod -R 777 /datadrive
+nano ~/.bashrc
+export SPRING_PROFILES_ACTIVE=prod
+```
+# Deploy (Ubuntu)
+
+```
+cd /datadrive/planovic
+git pull
 docker compose up -d
 ```
+# Dev environment (Windows)
+install and start MongoDB
+set environment variable `SPRING_PROFILES_ACTIVE` to `dev`
+Run application in IntelliJ
 
 # Test running app
-Open [localhost:8080](localhost:8080) in browser
+Open [localhost:8080](localhost:8080)
 
 Add something to db
 ```
