@@ -1,6 +1,6 @@
 package ch.wiibeeri.planovic.repositories;
 
-import ch.wiibeeri.planovic.datatypes.Entry;
+import ch.wiibeeri.planovic.datatypes.db.Entry;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 

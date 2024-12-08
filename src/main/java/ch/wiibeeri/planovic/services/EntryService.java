@@ -1,6 +1,6 @@
 package ch.wiibeeri.planovic.services;
 
-import ch.wiibeeri.planovic.datatypes.Entry;
+import ch.wiibeeri.planovic.datatypes.db.Entry;
 import ch.wiibeeri.planovic.repositories.EntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

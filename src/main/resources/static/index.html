@@ -1,10 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Guguuseli</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 Calendar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            border-collapse: collapse;
+            width: 400px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+
+        a {
+          cursor: pointer
+        }
+    </style>
 </head>
 <body>
-<h1>Bin ich gewese stuuuube, sitze</h1>
+    <!-- Select Year   -->
+    <a onclick="changeYear(-1)">←</a><span id="year"></span><a onclick="changeYear(1)">→</a>
+
+    <!-- Calender -->
+    <table id="table1">
+      <thead>
+          <tr>
+              <th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th>
+          </tr>
+      </thead>
+      <tbody id="tbody1">
+        <!-- Filled by script -->
+      </tbody>
+  </table>
 </body>
+<script>
+    const BASE_URL = "http://localhost:8080";
+    let currentYear;
+
+
+    let setYearAndLoadCalendar = function(year){
+      currentYear = year;
+      document.getElementById("year").innerHTML=year;
+      document.loadCalendar(year);
+    }
+
+    document.changeYear = function(amount){
+      setYearAndLoadCalendar(currentYear+amount);
+    }
+
+    /* Helper for GET requests */
+    function get(url, cb){
+      url = `${BASE_URL}/api/${url}`;
+      fetch(url)
+        .then(res => {
+          if (!res.ok) throw Error("Error: "+url);
+          return res.json();
+        })
+        .then(cb)
+    }
+
+    function createHtmlTableCell(dayData){
+        let td = document.createElement('td');
+        if(dayData.d){
+          td.innerHTML = `${dayData.d}${dayData.text?": "+dayData.text:""}`;
+        }
+        if(dayData.m%2==0) td.style.backgroundColor = "lightgray";
+        // dayData.td = td;
+        // td.update = function(){this.textContent = dayData.text;}
+        // td.update();
+        return td;
+    }
+
+    function createHtmlTableRow(tdArray){
+      tr = document.createElement('tr');
+      for (let td of tdArray){
+        tr.appendChild(td)
+      }
+      return tr;
+    }
+
+    function createEmptyCells(amount, month){
+      let emptyCells = [];
+      let fakeDayData = {m:month};
+      for(let i=1;i<amount;i++){
+          emptyCells.push(createHtmlTableCell(fakeDayData));
+      }
+      return emptyCells
+    }
+
+    /* Load annual data and create html */
+    document.loadCalendar = function(year){
+      document.getElementById("tbody1").innerHTML = "";
+      get('cal/year/'+year, yearData => {
+          let tdArray = [];
+          let numEmptyCellsToInsert = yearData.days[0].dow;
+          tdArray.push(...createEmptyCells(numEmptyCellsToInsert));
+
+          for(const day of yearData.days){
+            tdArray.push(createHtmlTableCell(day))
+            if(day.dow==7 && tdArray.length>0){
+              let tr = createHtmlTableRow(tdArray);
+              document.getElementById("tbody1").appendChild(tr);
+              tdArray = []
+            }
+          }
+
+          if(tdArray.length>0){
+              let tr = createHtmlTableRow(tdArray);
+              document.getElementById("tbody1").appendChild(tr);
+          }
+      })
+    }
+
+    /* On pageload */
+    setYearAndLoadCalendar(new Date().getFullYear());
+</script>
 </html>

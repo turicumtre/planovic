@@ -1,6 +1,6 @@
 package ch.wiibeeri.planovic.controllers;
 
-import ch.wiibeeri.planovic.datatypes.Entry;
+import ch.wiibeeri.planovic.datatypes.db.Entry;
 import ch.wiibeeri.planovic.services.EntryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

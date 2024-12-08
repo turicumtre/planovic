@@ -1,4 +1,4 @@
-package ch.wiibeeri.planovic.datatypes;
+package ch.wiibeeri.planovic.datatypes.db;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
