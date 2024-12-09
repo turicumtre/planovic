@@ -31,16 +31,7 @@
     <a onclick="changeYear(-1)">←</a><span id="year"></span><a onclick="changeYear(1)">→</a>
 
     <!-- Calender -->
-    <table id="table1">
-      <thead>
-          <tr>
-              <th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th>
-          </tr>
-      </thead>
-      <tbody id="tbody1">
-        <!-- Filled by script -->
-      </tbody>
-  </table>
+    <div id="tables"></div>
 </body>
 <script>
     const BASE_URL = "http://localhost:8080";
@@ -97,11 +88,46 @@
       return emptyCells
     }
 
+    /*
+     *   <table id="table1">
+     *     <thead>
+     *         <tr>
+     *        *     <th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th>
+     *         </tr>
+     *     </thead>
+     *     <tbody id="tbody1">
+     *       <!-- Filled by script -->
+     *     </tbody>
+     *   </table>
+     */
+    function createHtmlTable(trArray){
+      let table = document.createElement('table');
+      let thead = document.createElement('thead');
+      let tr = document.createElement('tr');
+      ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].forEach(day=>{
+        let th = document.createElement('th')
+        th.innerHTML = day;
+        tr.appendChild(th)
+      })
+      thead.appendChild(tr);
+
+      for(let tr of trArray){
+        thead.appendChild(tr);
+      }
+
+      table.appendChild(thead);
+      document.getElementById("tables").appendChild(table);
+    }
+
     /* Load annual data and create html */
     document.loadCalendar = function(year){
-      document.getElementById("tbody1").innerHTML = "";
+      /* Delete old calendar */
+      document.getElementById("tables").innerHTML = "";
+
+      /* Download annual calendar data */
       get('cal/year/'+year, yearData => {
-          let tdArray = [];
+          let trArray = []; // table rows
+          let tdArray = []; // table cells
           let numEmptyCellsToInsert = yearData.days[0].dow;
           tdArray.push(...createEmptyCells(numEmptyCellsToInsert));
 
@@ -109,15 +135,16 @@
             tdArray.push(createHtmlTableCell(day))
             if(day.dow==7 && tdArray.length>0){
               let tr = createHtmlTableRow(tdArray);
-              document.getElementById("tbody1").appendChild(tr);
+              trArray.push(tr);
               tdArray = []
             }
           }
 
           if(tdArray.length>0){
               let tr = createHtmlTableRow(tdArray);
-              document.getElementById("tbody1").appendChild(tr);
+              trArray.push(tr);
           }
+          createHtmlTable(trArray)
       })
     }
 
