@@ -19,6 +19,9 @@
         table {
             border-collapse: collapse;
             margin: 10px;
+            table-layout:fixed;
+            width: 30%;
+            max-width: 400px;
         }
         th {
             background-color:black;
@@ -27,8 +30,17 @@
 
         th, td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 4px;
             text-align: center;
+            width: 40px; /* Set the fixed width */
+            height: 20px; /* Set the fixed height */
+            overflow: hidden; /* Hide any content that overflows */
+            white-space: nowrap;
+        }
+
+        td.withEntry {
+            font-size: 10px;
+            background-color: #cc99ff
         }
 
         a {
@@ -72,7 +84,10 @@
     function createHtmlTableCell(dayData){
         let td = document.createElement('td');
         if(dayData.d){
-          td.innerHTML = `${dayData.d}${dayData.text?": "+dayData.text:""}`;
+          td.innerHTML = `${dayData.d}${dayData.text?" "+dayData.text:""}`;
+          if(dayData.text) {
+            td.className = "withEntry";
+          }
         }
         if(dayData.m%2==0) {
           td.style.backgroundColor = "lightgray";
