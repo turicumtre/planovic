@@ -1,8 +1,13 @@
 package ch.wiibeeri.planovic.datatypes.db;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import ch.wiibeeri.planovic.datatypes.frontend.DayData;
 
 @Document(collection="Entry")
 public class Entry {
@@ -18,5 +23,10 @@ public class Entry {
         this.year=year;
         this.month = month;
         this.day = day;
+    }
+
+    public DayData toDayData(){
+        LocalDate date = LocalDate.of(year, month, day);
+        return new DayData(month, day, date.getDayOfWeek().getValue(), date.getDayOfYear(), name);
     }
 }

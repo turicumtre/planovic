@@ -34,9 +34,25 @@ public class CalService {
 		for (LocalDate i = firstDay; !i.isAfter(lastDay); i = i.plusDays(1)) {
 			Entry entry = entryByDay.get(new Day(i.getDayOfMonth(), i.getMonthValue()));
 			String text = entry!=null?entry.name:null;
-			days.add(new DayData(i.getMonthValue(), i.getDayOfMonth(), i.getDayOfWeek().getValue(), text));
+			days.add(new DayData(i.getMonthValue(), i.getDayOfMonth(), i.getDayOfWeek().getValue(), i.getDayOfYear(), text));
 		}
 
-		return new YearData(year, days);
+		return new YearData(year, LocalDate.now().getDayOfYear(), days);
+	}
+
+	public DayData update(UpdateRequest ur) {
+		List<Entry> entries = entryRepository.date(ur.y(), ur.m(), ur.d());
+		if(entries.size()>1){
+			throw new RuntimeException("More than 1 entry for "+ur.d()+"/"+ur.m()+"/"+ur.y());
+		}
+		Entry entry = entries.isEmpty()?new Entry(ur.text(), ur.y(), ur.m(), ur.d()):entries.get(0);
+		entry.name = ur.text();
+
+		if(entry.name!=null && entry.name.isBlank() && entry.id!=null){
+			entryRepository.delete(entry);
+		}else{
+			entryRepository.save(entry);
+		}
+		return entry.toDayData();
 	}
 }
