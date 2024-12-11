@@ -25,7 +25,6 @@ public class EntryController {
 
     @GetMapping("/{id}")
     public Entry getEntryByID(@PathVariable String id) {
-        System.out.println(":)))");
         return entryService.getByID(id).orElse(null);
     }
 }

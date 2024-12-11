@@ -36,15 +36,34 @@
             height: 20px; /* Set the fixed height */
             overflow: hidden; /* Hide any content that overflows */
             white-space: nowrap;
+            box-sizing: border-box;
         }
 
         td.withEntry {
-            font-size: 10px;
-            background-color: #cc99ff
+            font-size: 8px;
+            background-color: #cc99ff !important
+        }
+
+        td.unevenMonth {
+            background-color: lightgray
+        }
+
+        td.selected {
+            border: 2px solid black !important;
+            background-color: darkgray;
         }
 
         a {
           cursor: pointer
+        }
+
+        #editor {
+            width: 500px;
+            padding: 10px; /* Optional: Add some padding */
+            border: 1px solid #ccc; /* Optional: Add border for visibility */
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
     </style>
 </head>
@@ -53,12 +72,15 @@
     <div id="year-selection"><a onclick="changeYear(-1)">←</a>&nbsp;<span id="year"></span>&nbsp;<a onclick="changeYear(1)">→</a></div>
 
     <!-- Calender -->
+    <textarea id="editor"></textarea>
     <div id="tables"></div>
 </body>
 <script>
     const BASE_URL = "http://localhost:8080";
     const MONTH_PER_COLUMN = 4;
     let currentYear;
+    let days=[];
+    let selectedDayIDx=0;
 
     let setYearAndLoadCalendar = function(year){
       currentYear = year;
@@ -75,24 +97,70 @@
       url = `${BASE_URL}/api/${url}`;
       fetch(url)
         .then(res => {
-          if (!res.ok) throw Error("Error: "+url);
+          if (!res.ok) throw Error("GET error: "+url);
           return res.json();
         })
         .then(cb)
     }
 
+    /* Helper for POST requests */
+    function post(url, body, cb){
+      url = `${BASE_URL}/api/${url}`;
+        fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(body)
+        })
+        .then(response => {
+          if (!res.ok) throw Error("GET error: "+url);
+          return res.json(); // Parse the JSON from the res
+        })
+        .then(cb)
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error); // Handle errors
+        });
+    }
+
+    let selectDay = function(index){
+       var selectedOld = days[selectedDayIDx];
+       var selectedNew = days[index];
+       if(!selectedNew){
+         console.error("could not select cell with index "+index);
+         return;
+       }
+
+       selectedDayIDx = index;
+
+       if(selectedOld){
+         selectedOld.td.classList.remove("selected");
+       }
+       selectedNew.td.classList.add("selected");
+       document.getElementById("editor").value = selectedNew?.text || "";
+    }
+
     function createHtmlTableCell(dayData){
-        let td = document.createElement('td');
-        if(dayData.d){
-          td.innerHTML = `${dayData.d}${dayData.text?" "+dayData.text:""}`;
+        dayData.td = document.createElement('td');
+
+        dayData.render = function(){
+          dayData.td.innerHTML = `${dayData.d}${dayData.text?" | "+dayData.text:""}`;
+          dayData.td.index = dayData.doy - 1;
           if(dayData.text) {
-            td.className = "withEntry";
+            dayData.td.classList.add("withEntry");
+          }else{
+            dayData.td.classList.remove("withEntry");
+          }
+          if(dayData.m%2==0) {
+            dayData.td.classList.add("unevenMonth");
           }
         }
-        if(dayData.m%2==0) {
-          td.style.backgroundColor = "lightgray";
+        if(dayData.d){
+          dayData.render();
         }
-        return td;
+        dayData.td.onclick = function(){
+          selectDay(dayData.td.index);
+        }
+
+        return dayData.td;
     }
 
     function createHtmlTableRow(tdArray){
@@ -153,6 +221,7 @@
       get('cal/year/'+year, yearData => {
           let trArray = []; // table rows
           let tdArray = []; // table cells
+          days = yearData.days;
           let numEmptyCellsToInsert = yearData.days[0].dow-1;
           tdArray.push(...createEmptyCells(numEmptyCellsToInsert, 1));
 
@@ -186,9 +255,23 @@
               let tr = createHtmlTableRow(tdArray);
               trArray.push(tr);
           }
-          createHtmlTable(trArray)
+          createHtmlTable(trArray);
+          selectDay(yearData.currentDayOfYear-1);
       })
     }
+
+    document.getElementById('editor').addEventListener('blur', ()=>{
+      let dayData = days[selectedDayIDx];
+      dayData.text = document.getElementById("editor").value;
+      dayData.render();
+      console.log("Saving")
+      post('cal/update', {
+        y: currentYear,
+        m: dayData.m,
+        d: dayData.d,
+        text: dayData.text,
+      })
+    });
 
     /* On pageload */
     setYearAndLoadCalendar(new Date().getFullYear());
