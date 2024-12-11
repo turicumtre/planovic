@@ -13,21 +13,25 @@ install docker compose as described here: https://docs.docker.com/compose/instal
 ssh-keygen -t ed25519 -C "planovic-server"
 cat /root/.ssh/id_ed25519.pub // add to Github
 git clone git@github.com:turicumtre/planovic.git
+cd planovic && git checkout release
 chmod -R 777 /datadrive
 nano ~/.bashrc
 export SPRING_PROFILES_ACTIVE=prod
 ```
 # Deploy (Ubuntu)
-
 ```
 cd /datadrive/planovic
-git pull
-docker compose up -d
+git checkout release && git pull && git merge main
+docker compose up --build -d
 ```
 # Dev environment (Windows)
 install and start MongoDB
 set environment variable `SPRING_PROFILES_ACTIVE` to `dev`
 Run application in IntelliJ
+
+# branches
+- use branch main to develop
+- use branch release to deploy (it contains some adjusted configs for deployment)
 
 # Test running app
 Open [localhost:8080](localhost:8080)
