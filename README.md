@@ -21,7 +21,7 @@ export SPRING_PROFILES_ACTIVE=prod
 # Deploy (Ubuntu)
 ```
 cd /datadrive/planovic
-git checkout release && git pull && git merge main
+git checkout release && git fetch && git merge main
 docker compose up --build -d
 ```
 # Dev environment (Windows)
