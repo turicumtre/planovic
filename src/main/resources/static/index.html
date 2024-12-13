@@ -308,7 +308,11 @@
               trArray.push(tr);
           }
           createHtmlTable(trArray);
-          selectDay(yearData.currentDayOfYear-1);
+          if(new Date().getFullYear() === currentYear){
+            selectDay(yearData.currentDayOfYear-1);
+          } else {
+             selectDay(0);
+          }
       })
     }
 
