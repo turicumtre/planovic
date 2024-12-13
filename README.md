@@ -17,6 +17,7 @@ cd planovic && git checkout release
 chmod -R 777 /datadrive
 nano ~/.bashrc
 export SPRING_PROFILES_ACTIVE=prod
+echo 'your new line of code here' >> ~/.bashrc
 ```
 # Deploy (Ubuntu)
 ```
@@ -24,7 +25,7 @@ cd /datadrive/planovic
 git checkout release && git fetch && git merge main
 docker compose up --build -d
 ```
-# Dev environment (Windows)
+# Dev environment
 install and start MongoDB
 set environment variable `SPRING_PROFILES_ACTIVE` to `dev`
 Run application in IntelliJ
