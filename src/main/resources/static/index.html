@@ -8,7 +8,7 @@
         body {
             font-family: Arial, sans-serif;
         }
-        #tables, #year-selection {
+        #tables, #year-selection, #day-month {
             display: flex;
             justify-content: center; /* Distribute space between items */
         }
@@ -109,6 +109,7 @@
 <body>
     <!-- Select Year   -->
     <div id="year-selection"><a onclick="changeYear(-1)">←</a>&nbsp;<span id="year"></span>&nbsp;<a onclick="changeYear(1)">→</a></div>
+    <div id="day-month"></div>
 
     <!-- Calender -->
     <textarea id="editor"></textarea>
@@ -120,6 +121,8 @@
     let currentYear;
     let days=[];
     let selectedDayIDx=0;
+    const DAY_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    const MONTHS_OF_YEAR = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
     function editorHasFocus(){
       return document.activeElement === document.getElementById('editor')
@@ -182,6 +185,9 @@
        }
        selectedNew.td.classList.add("selected");
        document.getElementById("editor").value = selectedNew?.text || "";
+
+       // update the written date below the year
+       document.getElementById("day-month").innerHTML = `${DAY_OF_WEEK[selectedNew.dow-1]} ${selectedNew.d}. ${MONTHS_OF_YEAR[selectedNew.m-1]}`
     }
 
     function createHtmlTableCell(dayData){
