@@ -70,7 +70,8 @@
             background-color: darkgray
         }
 
-        td.in-the-past {
+        td.in-past {
+          opacity:0.5;
         }
 
         td.uneven-month:not(.selected) {
@@ -203,6 +204,11 @@
           }
           if(dayData.m%2==0) {
             dayData.td.classList.add("uneven-month");
+          }
+          if(dayData.inPast){
+            dayData.td.classList.add("in-past");
+          }else{
+            dayData.td.classList.remove("in-past");
           }
         }
         if(dayData.d){

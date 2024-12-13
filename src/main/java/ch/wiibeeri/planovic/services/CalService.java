@@ -25,6 +25,8 @@ public class CalService {
 		LocalDate firstDay = Year.of(year).atDay(1);
 		LocalDate lastDay = firstDay.plusYears(1).minusDays(1);
 
+		LocalDate now = LocalDate.now();
+
 		Map<Day, Entry> entryByDay = entryRepository.allOfYear(year).stream() //
 			.collect(Collectors.toMap( //
 				e -> new Day(e.day, e.month), //
@@ -34,10 +36,11 @@ public class CalService {
 		for (LocalDate i = firstDay; !i.isAfter(lastDay); i = i.plusDays(1)) {
 			Entry entry = entryByDay.get(new Day(i.getDayOfMonth(), i.getMonthValue()));
 			String text = entry!=null?entry.name:null;
-			days.add(new DayData(i.getMonthValue(), i.getDayOfMonth(), i.getDayOfWeek().getValue(), i.getDayOfYear(), text));
+			boolean inPast = i.isBefore(now);
+			days.add(new DayData(i.getMonthValue(), i.getDayOfMonth(), i.getDayOfWeek().getValue(), i.getDayOfYear(), inPast, text));
 		}
 
-		return new YearData(year, LocalDate.now().getDayOfYear(), days);
+		return new YearData(year, now.getDayOfYear(), days);
 	}
 
 	public DayData update(UpdateRequest ur) {

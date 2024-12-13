@@ -27,6 +27,6 @@ public class Entry {
 
     public DayData toDayData(){
         LocalDate date = LocalDate.of(year, month, day);
-        return new DayData(month, day, date.getDayOfWeek().getValue(), date.getDayOfYear(), name);
+        return new DayData(month, day, date.getDayOfWeek().getValue(), date.getDayOfYear(), LocalDate.now().isBefore(date), name);
     }
 }
