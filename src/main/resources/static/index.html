@@ -17,11 +17,12 @@
           font-size:40px
         }
         table {
-            border-collapse: collapse;
             margin: 10px;
             table-layout:fixed;
             width: 30%;
             max-width: 400px;
+            border-collapse: separate; /* Use separate borders */
+            border-spacing: 0;
         }
         th {
             background-color:black;
@@ -29,8 +30,7 @@
         }
 
         th, td {
-            border: 1px solid #ddd;
-            padding: 4px;
+            padding: 6px;
             text-align: center;
             width: 40px; /* Set the fixed width */
             height: 20px; /* Set the fixed height */
@@ -38,6 +38,12 @@
             white-space: nowrap;
             box-sizing: border-box;
             user-select: none;
+        }
+
+        td{
+            border: 1px solid lightgray;
+            position: relative;
+            z-index: 0;
         }
 
         td.with-entry {
@@ -49,7 +55,19 @@
         }
 
         td.with-entry.selected {
-            background-color: #8000ff
+            background-color: #a957fa
+        }
+
+        td.selected:not(.with-entry) {
+            background-color: lightgray
+        }
+
+        td.with-entry.uneven-month:not(.selected) {
+            background-color: #cc99ff
+        }
+
+        td.uneven-month.selected:not(.with-entry) {
+            background-color: darkgray
         }
 
         td.in-the-past {
@@ -60,9 +78,18 @@
         }
 
         td.selected {
-            background-color: black;
-            color:white;
-            opacity:1
+            z-index: 2;
+            border: 1px solid black;
+            animation: blink 1s infinite; /* 1s total duration, infinite repetitions */
+        }
+
+        @keyframes blink {
+            0%, 100% {
+                border-color: black;
+            }
+            50% {
+                border-color: lightgray;
+            }
         }
 
         a {
