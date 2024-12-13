@@ -306,7 +306,7 @@
       })
     }
 
-    document.getElementById('editor').addEventListener('blur', ()=>{
+    function saveSelectedDay(){
       let dayData = days[selectedDayIDx];
       dayData.text = document.getElementById("editor").value;
       dayData.render();
@@ -317,7 +317,9 @@
         d: dayData.d,
         text: dayData.text,
       })
-    });
+    }
+
+    document.getElementById('editor').addEventListener('blur', saveSelectedDay);
 
     document.addEventListener('keydown', event => {
     if(editorHasFocus()){
@@ -346,6 +348,10 @@
         case 'Enter':
           setEditorFocus(true);
           event.preventDefault();
+          break;
+        case 'Delete':
+          document.getElementById("editor").value = "";
+          saveSelectedDay();
           break;
         default:
           break;
