@@ -20,7 +20,7 @@
             margin: 10px;
             table-layout:fixed;
             width: 30%;
-            max-width: 400px;
+            max-width: 500px;
             border-collapse: separate; /* Use separate borders */
             border-spacing: 0;
         }
@@ -122,8 +122,8 @@
     let currentYear;
     let days=[];
     let selectedDayIDx=0;
-    const DAY_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    const MONTHS_OF_YEAR = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
     function editorHasFocus(){
       return document.activeElement === document.getElementById('editor')
@@ -188,14 +188,20 @@
        document.getElementById("editor").value = selectedNew?.text || "";
 
        // update the written date below the year
-       document.getElementById("day-month").innerHTML = `${DAY_OF_WEEK[selectedNew.dow-1]} ${selectedNew.d}. ${MONTHS_OF_YEAR[selectedNew.m-1]}`
+       document.getElementById("day-month").innerHTML = `${DAYS[selectedNew.dow-1]} ${selectedNew.d}. ${MONTHS[selectedNew.m-1]}`
     }
 
     function createHtmlTableCell(dayData){
         dayData.td = document.createElement('td');
 
         dayData.render = function(){
-          dayData.td.innerHTML = `${dayData.d}${dayData.text?" | "+dayData.text:""}`;
+          if(dayData.text) {
+            dayData.td.innerHTML = `${dayData.d} | ${dayData.text}`;
+          } else if (dayData.d === 1){
+            dayData.td.innerHTML = "1. "+MONTHS[dayData.m-1].substring(0,3);
+          } else {
+            dayData.td.innerHTML = dayData.d;
+          }
           dayData.td.index = dayData.doy - 1;
           if(dayData.text) {
             dayData.td.classList.add("with-entry");
