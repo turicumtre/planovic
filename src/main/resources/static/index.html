@@ -284,6 +284,9 @@
 
       /* Download annual calendar data */
       get('cal/year/'+year, yearData => {
+          /* Delete old calendar again (prevents multiple years to be shown in case of dbl click of arrow in slow network) */
+          document.getElementById("tables").innerHTML = "";
+
           let trArray = []; // table rows
           let tdArray = []; // table cells
           days = yearData.days;
