@@ -116,6 +116,7 @@
     <textarea id="editor"></textarea>
     <div id="tables"></div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@2.2.6/dist/purify.min.js"></script>
 <script>
     const BASE_URL = "http://localhost:8080";
     const MONTH_PER_COLUMN = 4;
@@ -330,7 +331,9 @@
 
     function saveSelectedDay(){
       let dayData = days[selectedDayIDx];
-      dayData.text = document.getElementById("editor").value;
+      const dirty = document.getElementById("editor").value;
+      const clean = DOMPurify.sanitize(dirty);
+      dayData.text = clean;
       dayData.render();
       console.log("Saving")
       post('cal/update', {

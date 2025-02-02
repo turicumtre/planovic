@@ -22,7 +22,8 @@ echo 'your new line of code here' >> ~/.bashrc
 # Deploy (Ubuntu)
 ```
 cd /datadrive/planovic
-git checkout release && git fetch && git merge main
+git checkout main && git pull
+git checkout release && git merge main -m "Merge main into release branch for deployment"
 docker compose up --build -d
 ```
 # Dev environment
